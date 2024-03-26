@@ -1,9 +1,9 @@
 import express, { Express } from 'express';
 
-import { FacePalmServer } from './setupServer';
-import databaseConnection from './setupDatabase';
+import { FacePalmServer } from '@root/setupServer';
+import databaseConnection from '@root/setupDatabase';
 
-import { config } from './config';
+import { config } from '@root/config';
 
 // import tester from '@feature/tester/'
 
@@ -18,6 +18,7 @@ class Application {
 
   private loadConfig(): void {
     config.validateConfig();
+    config.cloudinaryConfig();
   }
 }
 
