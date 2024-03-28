@@ -6,8 +6,9 @@ import { createBullBoard } from '@bull-board/api';
 import Queue, { Job } from 'bull';
 import Logger from 'bunyan';
 import { IAuthJob } from '@auth/interfaces/auth.interface';
+import { IEmailJob } from '@user/interfaces/user.interface';
 
-type IBaseJobData = IAuthJob;
+type IBaseJobData = IAuthJob | IEmailJob;
 
 let bullAdapters: BullAdapter[] = [];
 

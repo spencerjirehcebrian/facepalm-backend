@@ -27,7 +27,7 @@ export class SignUp {
     //check if user exists
     const checkIfUserExist: IAuthDocument = await authService.getUserByUsernameOrEmail(username, email);
     if (checkIfUserExist) {
-      throw new BadRequestError('Invalid Credentials');
+      throw new BadRequestError('User/email already exists');
     }
 
     const authObjectId: ObjectId = new ObjectId();
@@ -62,7 +62,7 @@ export class SignUp {
     const userJwt: string = SignUp.prototype.signToken(authData, userObjectId);
     req.session = { jwt: userJwt };
 
-    res.status(HTTP_STATUS.CREATED).json({ message: 'User Created Succcessfully', user: userDataForCache, token: userJwt });
+    res.status(HTTP_STATUS.CREATED).json({ message: 'User Created Successfully', user: userDataForCache, token: userJwt });
   }
 
   private signToken(data: IAuthDocument, userObjectId: ObjectId): string {
