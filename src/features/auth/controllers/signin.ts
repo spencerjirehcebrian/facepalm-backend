@@ -7,8 +7,14 @@ import HTTP_STATUS from 'http-status-codes';
 import { authService } from '@service/db/auth.service';
 import { signinSchema } from '@auth/schemes/signin';
 import { BadRequestError } from '@global/helpers/error-handler';
-import { IUserDocument } from '@user/interfaces/user.interface';
+import { IUserDocument, IResetPasswordParams } from '@user/interfaces/user.interface';
 import { userService } from '@service/db/user.service';
+import { mailTransport } from '@service/emails/mail.transport';
+import { forgotPasswordTemplate } from '@service/emails/templates/forgot-password/forgot-password-template';
+import { emailQueue } from '@service/queues/email.queue';
+import moment from 'moment';
+import publicIP from 'ip';
+import { resetPasswordTemplate } from '@service/emails/templates/reset-password/reset-password-template';
 
 export class SignIn {
   @joiValidation(signinSchema) //validate data that is sent
@@ -42,13 +48,29 @@ export class SignIn {
 
     const userDocument: IUserDocument = {
       ...user,
-      authID: existingUser!._id,
+      authId: existingUser!._id,
       username: existingUser!.username,
       email: existingUser!.email,
       avatarColor: existingUser!.avatarColor,
       uId: existingUser!.uId,
       createdAt: existingUser!.createdAt
     } as unknown as IUserDocument;
+
+    //await mailTransport.sendEmail('sincere.runte@ethereal.email', 'Meow', 'Meowmewo');
+
+
+    //const resetLink = `${config.CLIENT_URL}/reset-password?token=123123123123`;
+    // const template: string = forgotPasswordTemplate.passwordResetTemplate(existingUser.username!, resetLink);
+    //emailQueue.addEmailJob('forgotPasswordEmail', {template, receiverEmail: 'sincere.runte@ethereal.email', subject: 'Reset your password'});
+
+    const templateParams: IResetPasswordParams = {
+      username: existingUser.username!,
+      email: existingUser.email!,
+      ipaddress: publicIP.address(),
+      date: moment().format('MM/DD/YYYY HH:mm')
+    };
+    const template: string = resetPasswordTemplate.passwordResetConfirmationTemplate(templateParams);
+    emailQueue.addEmailJob('resetPasswordEmail', {template, receiverEmail: 'sincere.runte@ethereal.email', subject: 'Password reset confirmation'});
 
     req.session = { jwt: userJwt };
     res.status(HTTP_STATUS.OK).json({ message: 'User Logged In Succcessfully', user: userDocument, token: userJwt });

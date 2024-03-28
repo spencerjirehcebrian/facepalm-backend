@@ -15,7 +15,7 @@ const signupSchema: ObjectSchema = Joi.object().keys({
   }),
   email: Joi.string().required().email().messages({
     'string.base': 'Email must be of type string',
-    'string.email': 'Invalid format',
+    'string.email': 'Invalid email format',
     'string.empty': 'Email is a required feild'
   }),
   avatarColor: Joi.string().required().min(4).max(16).messages({

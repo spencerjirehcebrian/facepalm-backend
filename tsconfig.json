@@ -30,6 +30,7 @@
       "@service/*":["src/shared/services/*"],
       "@socket/*":["src/shared/sockets/*"],
       "@worker/*":["src/shared/workers/*"],
+      "@mock/*":["src/mocks/*"],
       "@root/*":["src/*"] //always import this root as last imported property
     }
   }
